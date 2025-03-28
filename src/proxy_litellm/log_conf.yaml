@@ -1,0 +1,52 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+  detailed:
+    format: "%(asctime)s [%(levelname)s] %(name)s (%(filename)s:%(lineno)d): %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: detailed
+    stream: ext://sys.stdout
+
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/proxy_litellm.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+root:
+  level: INFO
+  handlers: [console, file]
+  propagate: true
+
+loggers:
+  proxy_litellm.utils.bedrock:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: false
+
+  proxy_litellm.api.routes:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: false
+
+  botocore:
+    level: INFO
+    handlers: [console, file]
+    propagate: false
+
+  uvicorn:
+    level: INFO
+  uvicorn.access:
+    level: INFO
